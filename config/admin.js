@@ -1,4 +1,6 @@
 module.exports = ({ env }) => ({
+  locales: ['en', 'ko', 'ja'],
+
   auth: {
     secret: env('ADMIN_JWT_SECRET'),
   },

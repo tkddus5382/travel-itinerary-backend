@@ -799,17 +799,59 @@ export interface ApiActivityActivity extends Schema.CollectionType {
   options: {
     draftAndPublish: true;
   };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
   attributes: {
-    name: Attribute.String & Attribute.Required;
+    name: Attribute.String &
+      Attribute.Required &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     category: Attribute.Enumeration<
       ['water-sports', 'tour', 'experience', 'food']
     > &
-      Attribute.Required;
-    price: Attribute.String;
-    description: Attribute.RichText;
-    bookingUrl: Attribute.String;
-    imageUrl: Attribute.Media<'images'>;
-    order: Attribute.Integer & Attribute.DefaultTo<0>;
+      Attribute.Required &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    price: Attribute.String &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    description: Attribute.RichText &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    bookingUrl: Attribute.String &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    imageUrl: Attribute.Media<'images'> &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    order: Attribute.Integer &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Attribute.DefaultTo<0>;
     city: Attribute.Relation<
       'api::activity.activity',
       'manyToOne',
@@ -830,6 +872,12 @@ export interface ApiActivityActivity extends Schema.CollectionType {
       'admin::user'
     > &
       Attribute.Private;
+    localizations: Attribute.Relation<
+      'api::activity.activity',
+      'oneToMany',
+      'api::activity.activity'
+    >;
+    locale: Attribute.String;
   };
 }
 
@@ -844,12 +892,39 @@ export interface ApiCategoryCategory extends Schema.CollectionType {
   options: {
     draftAndPublish: false;
   };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
   attributes: {
-    name: Attribute.String & Attribute.Required & Attribute.Unique;
+    name: Attribute.String &
+      Attribute.Required &
+      Attribute.Unique &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     slug: Attribute.UID<'api::category.category', 'name'> & Attribute.Required;
-    description: Attribute.Text;
-    color: Attribute.String;
-    icon: Attribute.String;
+    description: Attribute.Text &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    color: Attribute.String &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    icon: Attribute.String &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     itineraries: Attribute.Relation<
       'api::category.category',
       'oneToMany',
@@ -869,6 +944,12 @@ export interface ApiCategoryCategory extends Schema.CollectionType {
       'admin::user'
     > &
       Attribute.Private;
+    localizations: Attribute.Relation<
+      'api::category.category',
+      'oneToMany',
+      'api::category.category'
+    >;
+    locale: Attribute.String;
   };
 }
 
@@ -883,14 +964,52 @@ export interface ApiCityCity extends Schema.CollectionType {
   options: {
     draftAndPublish: true;
   };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
   attributes: {
-    name: Attribute.String & Attribute.Required;
-    nameEn: Attribute.String;
+    name: Attribute.String &
+      Attribute.Required &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    nameEn: Attribute.String &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     slug: Attribute.UID<'api::city.city', 'name'> & Attribute.Required;
-    description: Attribute.RichText;
-    imageUrl: Attribute.Media<'images'>;
-    order: Attribute.Integer & Attribute.DefaultTo<0>;
-    isPublished: Attribute.Boolean & Attribute.DefaultTo<false>;
+    description: Attribute.RichText &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    imageUrl: Attribute.Media<'images'> &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    order: Attribute.Integer &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Attribute.DefaultTo<0>;
+    isPublished: Attribute.Boolean &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Attribute.DefaultTo<false>;
     country: Attribute.Relation<
       'api::city.city',
       'manyToOne',
@@ -918,6 +1037,12 @@ export interface ApiCityCity extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<'api::city.city', 'oneToOne', 'admin::user'> &
       Attribute.Private;
+    localizations: Attribute.Relation<
+      'api::city.city',
+      'oneToMany',
+      'api::city.city'
+    >;
+    locale: Attribute.String;
   };
 }
 
@@ -932,14 +1057,53 @@ export interface ApiCountryCountry extends Schema.CollectionType {
   options: {
     draftAndPublish: true;
   };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
   attributes: {
-    name: Attribute.String & Attribute.Required & Attribute.Unique;
-    nameEn: Attribute.String;
+    name: Attribute.String &
+      Attribute.Required &
+      Attribute.Unique &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    nameEn: Attribute.String &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     slug: Attribute.UID<'api::country.country', 'name'> & Attribute.Required;
-    description: Attribute.RichText;
-    imageUrl: Attribute.Media<'images'>;
-    order: Attribute.Integer & Attribute.DefaultTo<0>;
-    isPublished: Attribute.Boolean & Attribute.DefaultTo<false>;
+    description: Attribute.RichText &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    imageUrl: Attribute.Media<'images'> &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    order: Attribute.Integer &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Attribute.DefaultTo<0>;
+    isPublished: Attribute.Boolean &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Attribute.DefaultTo<false>;
     cities: Attribute.Relation<
       'api::country.country',
       'oneToMany',
@@ -960,6 +1124,12 @@ export interface ApiCountryCountry extends Schema.CollectionType {
       'admin::user'
     > &
       Attribute.Private;
+    localizations: Attribute.Relation<
+      'api::country.country',
+      'oneToMany',
+      'api::country.country'
+    >;
+    locale: Attribute.String;
   };
 }
 
@@ -974,17 +1144,59 @@ export interface ApiHotelHotel extends Schema.CollectionType {
   options: {
     draftAndPublish: true;
   };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
   attributes: {
-    name: Attribute.String & Attribute.Required;
+    name: Attribute.String &
+      Attribute.Required &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     priceRange: Attribute.Enumeration<
       ['budget', 'moderate', 'upscale', 'luxury']
     > &
-      Attribute.Required;
-    rating: Attribute.Decimal;
-    description: Attribute.RichText;
-    bookingUrl: Attribute.String;
-    imageUrl: Attribute.Media<'images'>;
-    order: Attribute.Integer & Attribute.DefaultTo<0>;
+      Attribute.Required &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    rating: Attribute.Decimal &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    description: Attribute.RichText &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    bookingUrl: Attribute.String &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    imageUrl: Attribute.Media<'images'> &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    order: Attribute.Integer &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Attribute.DefaultTo<0>;
     city: Attribute.Relation<'api::hotel.hotel', 'manyToOne', 'api::city.city'>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -1001,6 +1213,12 @@ export interface ApiHotelHotel extends Schema.CollectionType {
       'admin::user'
     > &
       Attribute.Private;
+    localizations: Attribute.Relation<
+      'api::hotel.hotel',
+      'oneToMany',
+      'api::hotel.hotel'
+    >;
+    locale: Attribute.String;
   };
 }
 
@@ -1015,17 +1233,67 @@ export interface ApiItineraryItinerary extends Schema.CollectionType {
   options: {
     draftAndPublish: true;
   };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
   attributes: {
-    title: Attribute.String & Attribute.Required;
+    title: Attribute.String &
+      Attribute.Required &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     slug: Attribute.UID<'api::itinerary.itinerary', 'title'> &
       Attribute.Required;
-    summary: Attribute.Text;
-    content: Attribute.RichText;
-    durationDays: Attribute.Integer & Attribute.Required;
-    coverImage: Attribute.Media<'images'>;
-    order: Attribute.Integer & Attribute.DefaultTo<0>;
-    isPublished: Attribute.Boolean & Attribute.DefaultTo<false>;
-    viewCount: Attribute.Integer & Attribute.DefaultTo<0>;
+    summary: Attribute.Text &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    content: Attribute.RichText &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    durationDays: Attribute.Integer &
+      Attribute.Required &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    coverImage: Attribute.Media<'images'> &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    order: Attribute.Integer &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Attribute.DefaultTo<0>;
+    isPublished: Attribute.Boolean &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Attribute.DefaultTo<false>;
+    viewCount: Attribute.Integer &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Attribute.DefaultTo<0>;
     city: Attribute.Relation<
       'api::itinerary.itinerary',
       'manyToOne',
@@ -1061,6 +1329,12 @@ export interface ApiItineraryItinerary extends Schema.CollectionType {
       'admin::user'
     > &
       Attribute.Private;
+    localizations: Attribute.Relation<
+      'api::itinerary.itinerary',
+      'oneToMany',
+      'api::itinerary.itinerary'
+    >;
+    locale: Attribute.String;
   };
 }
 
@@ -1075,21 +1349,74 @@ export interface ApiPlacePlace extends Schema.CollectionType {
   options: {
     draftAndPublish: true;
   };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
   attributes: {
-    name: Attribute.String & Attribute.Required;
+    name: Attribute.String &
+      Attribute.Required &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     category: Attribute.Enumeration<
       ['attraction', 'restaurant', 'cafe', 'shopping']
     > &
-      Attribute.Required;
-    dayNumber: Attribute.Integer & Attribute.Required;
+      Attribute.Required &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    dayNumber: Attribute.Integer &
+      Attribute.Required &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     timeSlot: Attribute.Enumeration<
       ['morning', 'afternoon', 'evening', 'night']
-    >;
-    description: Attribute.RichText;
-    googleMapsUrl: Attribute.String;
-    externalUrl: Attribute.String;
-    imageUrl: Attribute.Media<'images'>;
-    order: Attribute.Integer & Attribute.DefaultTo<0>;
+    > &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    description: Attribute.RichText &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    googleMapsUrl: Attribute.String &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    externalUrl: Attribute.String &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    imageUrl: Attribute.Media<'images'> &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    order: Attribute.Integer &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }> &
+      Attribute.DefaultTo<0>;
     itinerary: Attribute.Relation<
       'api::place.place',
       'manyToOne',
@@ -1110,6 +1437,12 @@ export interface ApiPlacePlace extends Schema.CollectionType {
       'admin::user'
     > &
       Attribute.Private;
+    localizations: Attribute.Relation<
+      'api::place.place',
+      'oneToMany',
+      'api::place.place'
+    >;
+    locale: Attribute.String;
   };
 }
 
@@ -1124,8 +1457,20 @@ export interface ApiTagTag extends Schema.CollectionType {
   options: {
     draftAndPublish: false;
   };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
   attributes: {
-    name: Attribute.String & Attribute.Required & Attribute.Unique;
+    name: Attribute.String &
+      Attribute.Required &
+      Attribute.Unique &
+      Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
     slug: Attribute.UID<'api::tag.tag', 'name'> & Attribute.Required;
     itineraries: Attribute.Relation<
       'api::tag.tag',
@@ -1138,6 +1483,12 @@ export interface ApiTagTag extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<'api::tag.tag', 'oneToOne', 'admin::user'> &
       Attribute.Private;
+    localizations: Attribute.Relation<
+      'api::tag.tag',
+      'oneToMany',
+      'api::tag.tag'
+    >;
+    locale: Attribute.String;
   };
 }
 

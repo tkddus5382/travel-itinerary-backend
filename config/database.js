@@ -21,9 +21,14 @@ module.exports = ({ env }) => {
         max: env.int('DATABASE_POOL_MAX', 10),
       },
     },
+
     sqlite: {
       connection: {
-        filename: path.join(__dirname, '..', env('DATABASE_FILENAME', '.tmp/data.db')),
+        filename: path.join(
+          __dirname,
+          '..',
+          env('DATABASE_FILENAME', '.tmp/data.db')
+        ),
       },
       useNullAsDefault: true,
     },
@@ -33,7 +38,10 @@ module.exports = ({ env }) => {
     connection: {
       client,
       ...connections[client],
-      acquireConnectionTimeout: env.int('DATABASE_CONNECTION_TIMEOUT', 60000),
+      acquireConnectionTimeout: env.int(
+        'DATABASE_CONNECTION_TIMEOUT',
+        60000
+      ),
     },
   };
 };
