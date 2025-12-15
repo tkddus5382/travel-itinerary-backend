@@ -1,0 +1,50 @@
+{
+  "kind": "collectionType",
+  "collectionName": "hotels",
+  "info": {
+    "singularName": "hotel",
+    "pluralName": "hotels",
+    "displayName": "Hotel",
+    "description": "호텔 추천"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "priceRange": {
+      "type": "enumeration",
+      "enum": ["budget", "moderate", "upscale", "luxury"],
+      "required": true
+    },
+    "rating": {
+      "type": "decimal"
+    },
+    "description": {
+      "type": "richtext"
+    },
+    "bookingUrl": {
+      "type": "string"
+    },
+    "imageUrl": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "order": {
+      "type": "integer",
+      "default": 0
+    },
+    "city": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::city.city",
+      "inversedBy": "hotels"
+    }
+  }
+}

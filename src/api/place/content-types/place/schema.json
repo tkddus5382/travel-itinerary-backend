@@ -1,0 +1,58 @@
+{
+  "kind": "collectionType",
+  "collectionName": "places",
+  "info": {
+    "singularName": "place",
+    "pluralName": "places",
+    "displayName": "Place",
+    "description": "장소/명소"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": ["attraction", "restaurant", "cafe", "shopping"],
+      "required": true
+    },
+    "dayNumber": {
+      "type": "integer",
+      "required": true
+    },
+    "timeSlot": {
+      "type": "enumeration",
+      "enum": ["morning", "afternoon", "evening", "night"]
+    },
+    "description": {
+      "type": "richtext"
+    },
+    "googleMapsUrl": {
+      "type": "string"
+    },
+    "externalUrl": {
+      "type": "string"
+    },
+    "imageUrl": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "order": {
+      "type": "integer",
+      "default": 0
+    },
+    "itinerary": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::itinerary.itinerary",
+      "inversedBy": "places"
+    }
+  }
+}

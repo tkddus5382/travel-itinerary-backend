@@ -1,0 +1,32 @@
+{
+  "kind": "collectionType",
+  "collectionName": "tags",
+  "info": {
+    "singularName": "tag",
+    "pluralName": "tags",
+    "displayName": "Tag",
+    "description": "해시태그 (커플여행, 가족여행, 혼자여행 등)"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name",
+      "required": true
+    },
+    "itineraries": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::itinerary.itinerary",
+      "inversedBy": "tags"
+    }
+  }
+}
