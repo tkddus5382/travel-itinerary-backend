@@ -5,7 +5,7 @@
     "singularName": "itinerary",
     "pluralName": "itineraries",
     "displayName": "Itinerary",
-    "description": "여행 일정"
+    "description": "\udcec\ubfec\udced\ubefe \udcec\uc52a\udcec\uc819"
   },
   "options": {
     "draftAndPublish": true
@@ -117,6 +117,12 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::place.place",
+      "mappedBy": "itinerary"
+    },
+    "reviews": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::review.review",
       "mappedBy": "itinerary"
     }
   }

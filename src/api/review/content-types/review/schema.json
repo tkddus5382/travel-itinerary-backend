@@ -1,0 +1,47 @@
+{
+  "kind": "collectionType",
+  "collectionName": "reviews",
+  "info": {
+    "singularName": "review",
+    "pluralName": "reviews",
+    "displayName": "Review",
+    "description": "여행 일정 리뷰"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": false
+    }
+  },
+  "attributes": {
+    "rating": {
+      "type": "integer",
+      "required": true,
+      "min": 1,
+      "max": 5
+    },
+    "content": {
+      "type": "text",
+      "required": true,
+      "minLength": 10
+    },
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "itinerary": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::itinerary.itinerary",
+      "inversedBy": "reviews"
+    },
+    "likedBy": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "plugin::users-permissions.user"
+    }
+  }
+}
