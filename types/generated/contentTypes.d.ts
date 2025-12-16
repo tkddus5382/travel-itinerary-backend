@@ -1228,7 +1228,7 @@ export interface ApiItineraryItinerary extends Schema.CollectionType {
     singularName: 'itinerary';
     pluralName: 'itineraries';
     displayName: 'Itinerary';
-    description: '\uC5EC\uD589 \uC77C\uC815';
+    description: '\uDCEC\uBFEC\uDCED\uBEFE \uDCEC\uC52A\uDCEC\uC819';
   };
   options: {
     draftAndPublish: true;
@@ -1313,6 +1313,11 @@ export interface ApiItineraryItinerary extends Schema.CollectionType {
       'api::itinerary.itinerary',
       'oneToMany',
       'api::place.place'
+    >;
+    reviews: Attribute.Relation<
+      'api::itinerary.itinerary',
+      'oneToMany',
+      'api::review.review'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -1446,6 +1451,69 @@ export interface ApiPlacePlace extends Schema.CollectionType {
   };
 }
 
+export interface ApiReviewReview extends Schema.CollectionType {
+  collectionName: 'reviews';
+  info: {
+    singularName: 'review';
+    pluralName: 'reviews';
+    displayName: 'Review';
+    description: '\uC5EC\uD589 \uC77C\uC815 \uB9AC\uBDF0';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: false;
+    };
+  };
+  attributes: {
+    rating: Attribute.Integer &
+      Attribute.Required &
+      Attribute.SetMinMax<
+        {
+          min: 1;
+          max: 5;
+        },
+        number
+      >;
+    content: Attribute.Text &
+      Attribute.Required &
+      Attribute.SetMinMaxLength<{
+        minLength: 10;
+      }>;
+    user: Attribute.Relation<
+      'api::review.review',
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    itinerary: Attribute.Relation<
+      'api::review.review',
+      'manyToOne',
+      'api::itinerary.itinerary'
+    >;
+    likedBy: Attribute.Relation<
+      'api::review.review',
+      'manyToMany',
+      'plugin::users-permissions.user'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::review.review',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::review.review',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiTagTag extends Schema.CollectionType {
   collectionName: 'tags';
   info: {
@@ -1517,6 +1585,7 @@ declare module '@strapi/types' {
       'api::hotel.hotel': ApiHotelHotel;
       'api::itinerary.itinerary': ApiItineraryItinerary;
       'api::place.place': ApiPlacePlace;
+      'api::review.review': ApiReviewReview;
       'api::tag.tag': ApiTagTag;
     }
   }
