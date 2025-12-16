@@ -11,25 +11,37 @@ module.exports = createCoreController('api::review.review', ({ strapi }) => ({
     // 로그인한 사용자 정보 가져오기
     const user = ctx.state.user;
 
-    console.log('[Review Controller] Create called');
-    console.log('[Review Controller] Authenticated user:', user);
-    console.log('[Review Controller] Request body:', ctx.request.body);
-
     if (!user) {
       return ctx.unauthorized('You must be logged in to create a review');
     }
 
-    // user를 요청 데이터에 추가
-    ctx.request.body.data = {
-      ...ctx.request.body.data,
-      user: user.id,
-    };
+    // 요청 데이터 가져오기
+    const { rating, content, itinerary } = ctx.request.body.data;
 
-    console.log('[Review Controller] Modified request body:', ctx.request.body);
+    try {
+      // entityService를 직접 사용하여 권한 검사 우회
+      const review = await strapi.entityService.create('api::review.review', {
+        data: {
+          rating,
+          content,
+          itinerary,
+          user: user.id,  // 여기서 user 설정!
+        },
+        populate: ['user', 'likedBy', 'itinerary'],
+      });
 
-    // 기본 create 로직 실행
-    const response = await super.create(ctx);
+      console.log('[Review Controller] Review created successfully:', {
+        id: review.id,
+        user: review.user,
+      });
 
-    return response;
+      // Strapi 응답 형식으로 반환
+      return {
+        data: review,
+      };
+    } catch (error) {
+      console.error('[Review Controller] Error creating review:', error);
+      return ctx.badRequest('Failed to create review', { error: error.message });
+    }
   },
 }));
