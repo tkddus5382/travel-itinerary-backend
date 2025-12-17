@@ -7,6 +7,7 @@ module.exports = ({ env }) => {
   return {
     host: env('HOST', '0.0.0.0'),
     port: env.int('PORT', 1337),
+    url: env('URL'), // Explicitly use URL from environment variable
     app: {
       keys,
     },
