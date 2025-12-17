@@ -10,8 +10,7 @@ module.exports = ({ env }) => {
     app: {
       keys,
     },
-    proxy: true, // Trust proxy headers (required for Railway HTTPS)
-    url: env('URL', 'http://localhost:1337'),
+    proxy: true, // Trust proxy headers for Railway HTTPS
     webhooks: {
       populateRelations: env.bool('WEBHOOKS_POPULATE_RELATIONS', false),
     },
