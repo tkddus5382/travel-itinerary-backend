@@ -1,9 +1,15 @@
 module.exports = ({ env }) => ({
   email: {
     config: {
-      provider: 'resend',
+      provider: 'nodemailer',
       providerOptions: {
-        apiKey: env('RESEND_API_KEY'),
+        host: 'smtp.resend.com',
+        port: 587,
+        secure: false,
+        auth: {
+          user: 'resend',
+          pass: env('RESEND_API_KEY'),
+        },
       },
       settings: {
         defaultFrom: env('RESEND_DEFAULT_FROM', 'tkddus5382@gmail.com'),
