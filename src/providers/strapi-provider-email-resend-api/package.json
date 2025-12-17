@@ -1,0 +1,10 @@
+{
+  "name": "strapi-provider-email-resend-api",
+  "version": "1.0.0",
+  "description": "Resend email provider for Strapi using HTTP API",
+  "main": "index.js",
+  "keywords": ["strapi", "email", "resend"],
+  "strapi": {
+    "isProvider": true
+  }
+}
