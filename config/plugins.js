@@ -4,12 +4,13 @@ module.exports = ({ env }) => ({
       provider: 'nodemailer',
       providerOptions: {
         host: env('SMTP_HOST', 'smtp.gmail.com'),
-        port: env('SMTP_PORT', 587),
+        port: env.int('SMTP_PORT', 587),
+        secure: env.bool('SMTP_SECURE', false), // 587이면 false
         auth: {
           user: env('SMTP_USERNAME'),
           pass: env('SMTP_PASSWORD'),
         },
-        secure: env('SMTP_SECURE', 'false') === 'true',
+        requireTLS: true, // Gmail 587에서 안정적
       },
       settings: {
         defaultFrom: env('SMTP_DEFAULT_FROM'),
