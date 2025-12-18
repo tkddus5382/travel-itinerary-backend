@@ -1,7 +1,3 @@
-const utils = require('@strapi/utils');
-const { getService } = require('@strapi/plugin-users-permissions/server/utils');
-const jwt = require('jsonwebtoken');
-
 module.exports = (plugin) => {
   /**
    * Google OAuth callback with social-auth integration
@@ -87,8 +83,8 @@ module.exports = (plugin) => {
         console.log('[Google Auth] Created new user and social-auth entry:', user.id);
       }
 
-      // Generate JWT token
-      const jwtToken = getService('jwt').issue({ id: user.id });
+      // Generate JWT token using Strapi's JWT service
+      const jwtToken = strapi.plugin('users-permissions').service('jwt').issue({ id: user.id });
 
       return {
         jwt: jwtToken,
