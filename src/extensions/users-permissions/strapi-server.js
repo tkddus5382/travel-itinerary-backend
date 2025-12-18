@@ -21,6 +21,8 @@ module.exports = (plugin) => {
     handler: 'auth.linkSocial',
     config: {
       prefix: '',
+      policies: [],
+      middlewares: [],
     },
   });
 
@@ -30,6 +32,8 @@ module.exports = (plugin) => {
     handler: 'auth.mySocial',
     config: {
       prefix: '',
+      policies: [],
+      middlewares: [],
     },
   });
 
