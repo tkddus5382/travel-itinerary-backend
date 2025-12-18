@@ -14,5 +14,24 @@ module.exports = (plugin) => {
     },
   });
 
+  // Add social auth routes
+  plugin.routes['content-api'].routes.push({
+    method: 'POST',
+    path: '/auth/link-social',
+    handler: 'auth.linkSocial',
+    config: {
+      prefix: '',
+    },
+  });
+
+  plugin.routes['content-api'].routes.push({
+    method: 'GET',
+    path: '/auth/my-social',
+    handler: 'auth.mySocial',
+    config: {
+      prefix: '',
+    },
+  });
+
   return plugin;
 };

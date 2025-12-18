@@ -101,5 +101,87 @@ module.exports = (plugin) => {
     }
   };
 
+  /**
+   * Link social account to current user
+   */
+  plugin.controllers.auth.linkSocial = async (ctx) => {
+    const user = ctx.state.user;
+
+    if (!user) {
+      return ctx.unauthorized('You must be logged in to link a social account');
+    }
+
+    const { provider, providerId } = ctx.request.body;
+
+    if (!provider || !providerId) {
+      return ctx.badRequest('Provider and providerId are required');
+    }
+
+    try {
+      // Check if this social account is already linked
+      const existingAuth = await strapi.entityService.findMany('api::social-auth.social-auth', {
+        filters: { provider, providerId },
+        populate: ['user'],
+      });
+
+      if (existingAuth && existingAuth.length > 0) {
+        const linkedUser = existingAuth[0].user;
+
+        if (linkedUser && linkedUser.id === user.id) {
+          return {
+            data: existingAuth[0],
+            message: 'Social account already linked to your account',
+          };
+        }
+
+        return ctx.conflict('This social account is already linked to another user');
+      }
+
+      // Create new social auth entry
+      const socialAuth = await strapi.entityService.create('api::social-auth.social-auth', {
+        data: {
+          user: user.id,
+          provider,
+          providerId,
+        },
+        populate: ['user'],
+      });
+
+      console.log('[Social Auth] Linked:', { userId: user.id, provider });
+
+      return {
+        data: socialAuth,
+        message: 'Social account linked successfully',
+      };
+    } catch (error) {
+      console.error('[Social Auth] Link error:', error);
+      return ctx.internalServerError('Failed to link social account', { error: error.message });
+    }
+  };
+
+  /**
+   * Get linked social accounts for current user
+   */
+  plugin.controllers.auth.mySocial = async (ctx) => {
+    const user = ctx.state.user;
+
+    if (!user) {
+      return ctx.unauthorized('You must be logged in');
+    }
+
+    try {
+      const socialAuths = await strapi.entityService.findMany('api::social-auth.social-auth', {
+        filters: { user: user.id },
+      });
+
+      return {
+        data: socialAuths,
+      };
+    } catch (error) {
+      console.error('[Social Auth] Get error:', error);
+      return ctx.internalServerError('Failed to get social accounts', { error: error.message });
+    }
+  };
+
   return plugin;
 };
