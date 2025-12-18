@@ -2,39 +2,44 @@ module.exports = {
   routes: [
     {
       method: 'POST',
-      path: '/social-auth/link',
+      path: '/social-auths/link',
       handler: 'social-auth.link',
       config: {
-        policies: [],
-        middlewares: [],
+        prefix: '',
+        auth: {
+          scope: ['authenticated'],
+        },
       },
     },
     {
       method: 'GET',
-      path: '/social-auth/find-user',
+      path: '/social-auths/find-user',
       handler: 'social-auth.findUser',
       config: {
+        prefix: '',
         auth: false, // Allow unauthenticated access for login flow
-        policies: [],
-        middlewares: [],
       },
     },
     {
       method: 'GET',
-      path: '/social-auth/me',
+      path: '/social-auths/me',
       handler: 'social-auth.me',
       config: {
-        policies: [],
-        middlewares: [],
+        prefix: '',
+        auth: {
+          scope: ['authenticated'],
+        },
       },
     },
     {
       method: 'DELETE',
-      path: '/social-auth/:id/unlink',
+      path: '/social-auths/:id/unlink',
       handler: 'social-auth.unlink',
       config: {
-        policies: [],
-        middlewares: [],
+        prefix: '',
+        auth: {
+          scope: ['authenticated'],
+        },
       },
     },
   ],
