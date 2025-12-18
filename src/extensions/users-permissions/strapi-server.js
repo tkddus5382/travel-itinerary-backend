@@ -13,12 +13,13 @@ module.exports = (plugin) => {
     },
   });
 
-  // Add social auth routes
+  // Add social auth routes with auth disabled to bypass permission checks
   plugin.routes['content-api'].routes.push({
     method: 'POST',
     path: '/auth/link-social',
     handler: 'auth.linkSocial',
     config: {
+      auth: false,
       prefix: '',
       policies: [],
       middlewares: [],
@@ -30,6 +31,7 @@ module.exports = (plugin) => {
     path: '/auth/my-social',
     handler: 'auth.mySocial',
     config: {
+      auth: false,
       prefix: '',
       policies: [],
       middlewares: [],

@@ -105,10 +105,20 @@ module.exports = (plugin) => {
    * Link social account to current user
    */
   plugin.controllers.auth.linkSocial = async (ctx) => {
-    const user = ctx.state.user;
-
-    if (!user) {
-      return ctx.unauthorized('You must be logged in to link a social account');
+    // Manually verify JWT since auth is disabled on route
+    let user;
+    try {
+      const token = ctx.request.header.authorization?.replace('Bearer ', '');
+      if (!token) {
+        return ctx.unauthorized('No token provided');
+      }
+      const decoded = await strapi.plugin('users-permissions').service('jwt').verify(token);
+      user = await strapi.query('plugin::users-permissions.user').findOne({ where: { id: decoded.id } });
+      if (!user) {
+        return ctx.unauthorized('Invalid token');
+      }
+    } catch (error) {
+      return ctx.unauthorized('Invalid token');
     }
 
     const { provider, providerId } = ctx.request.body;
@@ -163,10 +173,20 @@ module.exports = (plugin) => {
    * Get linked social accounts for current user
    */
   plugin.controllers.auth.mySocial = async (ctx) => {
-    const user = ctx.state.user;
-
-    if (!user) {
-      return ctx.unauthorized('You must be logged in');
+    // Manually verify JWT since auth is disabled on route
+    let user;
+    try {
+      const token = ctx.request.header.authorization?.replace('Bearer ', '');
+      if (!token) {
+        return ctx.unauthorized('No token provided');
+      }
+      const decoded = await strapi.plugin('users-permissions').service('jwt').verify(token);
+      user = await strapi.query('plugin::users-permissions.user').findOne({ where: { id: decoded.id } });
+      if (!user) {
+        return ctx.unauthorized('Invalid token');
+      }
+    } catch (error) {
+      return ctx.unauthorized('Invalid token');
     }
 
     try {
