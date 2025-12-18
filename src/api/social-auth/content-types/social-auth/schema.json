@@ -1,0 +1,32 @@
+{
+  "kind": "collectionType",
+  "collectionName": "social_auths",
+  "info": {
+    "singularName": "social-auth",
+    "pluralName": "social-auths",
+    "displayName": "Social Auth",
+    "description": "소셜 로그인 연동 정보"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "required": true
+    },
+    "provider": {
+      "type": "enumeration",
+      "enum": ["google", "kakao", "instagram", "naver", "apple"],
+      "required": true
+    },
+    "providerId": {
+      "type": "string",
+      "required": true,
+      "unique": false
+    }
+  }
+}
