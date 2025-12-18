@@ -6,9 +6,8 @@ module.exports = {
       handler: 'social-auth.link',
       config: {
         prefix: '',
-        auth: {
-          scope: ['authenticated'],
-        },
+        policies: [],
+        middlewares: [],
       },
     },
     {
@@ -17,7 +16,9 @@ module.exports = {
       handler: 'social-auth.findUser',
       config: {
         prefix: '',
-        auth: false, // Allow unauthenticated access for login flow
+        auth: false,
+        policies: [],
+        middlewares: [],
       },
     },
     {
@@ -26,9 +27,8 @@ module.exports = {
       handler: 'social-auth.me',
       config: {
         prefix: '',
-        auth: {
-          scope: ['authenticated'],
-        },
+        policies: [],
+        middlewares: [],
       },
     },
     {
@@ -37,9 +37,8 @@ module.exports = {
       handler: 'social-auth.unlink',
       config: {
         prefix: '',
-        auth: {
-          scope: ['authenticated'],
-        },
+        policies: [],
+        middlewares: [],
       },
     },
   ],
