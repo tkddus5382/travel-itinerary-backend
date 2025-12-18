@@ -1,7 +1,6 @@
 module.exports = (plugin) => {
-  // Load custom auth controller
-  const authController = require('./controllers/Auth')(plugin);
-  plugin.controllers.auth = authController.controllers.auth;
+  // Load custom auth controller - it modifies plugin.controllers.auth directly
+  require('./controllers/Auth')(plugin);
 
   // Add custom route for Google OAuth callback
   plugin.routes['content-api'].routes.push({
