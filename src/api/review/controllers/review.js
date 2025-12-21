@@ -100,4 +100,61 @@ module.exports = createCoreController('api::review.review', ({ strapi }) => ({
       return ctx.badRequest('Failed to update review', { error: error.message });
     }
   },
+
+  /**
+   * Get reviews by current user
+   */
+  async myReviews(ctx) {
+    try {
+      // Verify JWT manually
+      const token = ctx.request.header.authorization?.replace('Bearer ', '');
+      if (!token) {
+        return ctx.unauthorized('No token provided');
+      }
+
+      const decoded = await strapi.plugin('users-permissions').service('jwt').verify(token);
+      const user = await strapi.query('plugin::users-permissions.user').findOne({
+        where: { id: decoded.id }
+      });
+
+      if (!user) {
+        return ctx.unauthorized('Invalid token');
+      }
+
+      // Get user's reviews with itinerary and likedBy populated
+      const reviews = await strapi.entityService.findMany('api::review.review', {
+        filters: { user: user.id },
+        populate: {
+          itinerary: {
+            fields: ['id', 'title'],
+          },
+          likedBy: {
+            fields: ['id'],
+          },
+        },
+        sort: ['createdAt:desc'],
+      });
+
+      // Format response with like count
+      const formattedReviews = reviews.map(review => ({
+        id: review.id,
+        rating: review.rating,
+        content: review.content,
+        createdAt: review.createdAt,
+        updatedAt: review.updatedAt,
+        itinerary: review.itinerary,
+        likeCount: review.likedBy ? review.likedBy.length : 0,
+      }));
+
+      return {
+        data: formattedReviews,
+        meta: {
+          total: formattedReviews.length,
+        },
+      };
+    } catch (error) {
+      console.error('[Review] My reviews error:', error);
+      return ctx.internalServerError('Failed to get reviews', { error: error.message });
+    }
+  },
 }));

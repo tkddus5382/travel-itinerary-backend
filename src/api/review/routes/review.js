@@ -6,4 +6,26 @@
 
 const { createCoreRouter } = require('@strapi/strapi').factories;
 
-module.exports = createCoreRouter('api::review.review');
+const defaultRouter = createCoreRouter('api::review.review');
+
+const customRoutes = {
+  routes: [
+    {
+      method: 'GET',
+      path: '/reviews/my',
+      handler: 'review.myReviews',
+      config: {
+        auth: false,
+        policies: [],
+        middlewares: [],
+      },
+    },
+  ],
+};
+
+module.exports = {
+  routes: [
+    ...defaultRouter.routes,
+    ...customRoutes.routes,
+  ],
+};
