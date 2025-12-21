@@ -13,6 +13,17 @@ module.exports = (plugin) => {
     },
   });
 
+  // Add route for completing Google signup
+  plugin.routes['content-api'].routes.push({
+    method: 'POST',
+    path: '/auth/complete-google-signup',
+    handler: 'auth.completeGoogleSignup',
+    config: {
+      auth: false,
+      prefix: '',
+    },
+  });
+
   // Add social auth routes with auth disabled to bypass permission checks
   plugin.routes['content-api'].routes.push({
     method: 'POST',
