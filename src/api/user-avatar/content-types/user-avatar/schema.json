@@ -1,0 +1,41 @@
+{
+  "kind": "collectionType",
+  "collectionName": "user_avatars",
+  "info": {
+    "singularName": "user-avatar",
+    "pluralName": "user-avatars",
+    "displayName": "User Avatar",
+    "description": "Tracks which avatars users have unlocked"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "required": true
+    },
+    "avatar": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::avatar.avatar",
+      "required": true
+    },
+    "unlockedAt": {
+      "type": "datetime",
+      "required": true
+    },
+    "unlockMethod": {
+      "type": "enumeration",
+      "enum": ["signup", "mission", "event_code", "admin_grant"],
+      "required": true
+    },
+    "unlockDetails": {
+      "type": "string",
+      "required": false
+    }
+  }
+}

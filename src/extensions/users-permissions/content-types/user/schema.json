@@ -65,11 +65,11 @@
       "inversedBy": "users",
       "configurable": false
     },
-    "profileImage": {
-      "type": "media",
-      "multiple": false,
-      "required": false,
-      "allowedTypes": ["images"]
+    "selectedAvatar": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::avatar.avatar",
+      "required": false
     }
   }
 }

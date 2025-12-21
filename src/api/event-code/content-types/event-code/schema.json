@@ -1,0 +1,52 @@
+{
+  "kind": "collectionType",
+  "collectionName": "event_codes",
+  "info": {
+    "singularName": "event-code",
+    "pluralName": "event-codes",
+    "displayName": "Event Code",
+    "description": "Redeemable codes for avatar unlocks"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "code": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "avatar": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::avatar.avatar",
+      "required": true
+    },
+    "description": {
+      "type": "text"
+    },
+    "maxUses": {
+      "type": "integer",
+      "required": false
+    },
+    "currentUses": {
+      "type": "integer",
+      "default": 0,
+      "required": true
+    },
+    "validFrom": {
+      "type": "date",
+      "required": false
+    },
+    "validUntil": {
+      "type": "date",
+      "required": false
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    }
+  }
+}

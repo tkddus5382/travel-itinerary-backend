@@ -1,3 +1,48 @@
+/**
+ * Grant default avatars to a new user
+ */
+async function grantDefaultAvatars(userId) {
+  try {
+    // Get all default-type avatars
+    const defaultAvatars = await strapi.entityService.findMany('api::avatar.avatar', {
+      filters: {
+        unlockType: 'default',
+        isActive: true,
+      },
+    });
+
+    if (!defaultAvatars || defaultAvatars.length === 0) {
+      console.warn('[Default Avatars] No default avatars found');
+      return;
+    }
+
+    // Grant all default avatars to the user
+    for (const avatar of defaultAvatars) {
+      await strapi.entityService.create('api::user-avatar.user-avatar', {
+        data: {
+          user: userId,
+          avatar: avatar.id,
+          unlockedAt: new Date(),
+          unlockMethod: 'signup',
+          unlockDetails: 'Default avatar',
+        },
+      });
+    }
+
+    // Set first default avatar as selected
+    if (defaultAvatars.length > 0) {
+      await strapi.query('plugin::users-permissions.user').update({
+        where: { id: userId },
+        data: { selectedAvatar: defaultAvatars[0].id },
+      });
+    }
+
+    console.log('[Default Avatars] Granted to user:', userId, 'count:', defaultAvatars.length);
+  } catch (error) {
+    console.error('[Default Avatars] Error:', error);
+  }
+}
+
 module.exports = (plugin) => {
   /**
    * Google OAuth callback with social-auth integration
@@ -33,7 +78,7 @@ module.exports = (plugin) => {
         filters: { provider, providerId },
         populate: {
           user: {
-            populate: ['profileImage']
+            populate: ['selectedAvatar']
           }
         },
       });
@@ -81,7 +126,7 @@ module.exports = (plugin) => {
           email: user.email,
           confirmed: user.confirmed,
           blocked: user.blocked,
-          profileImage: user.profileImage,
+          selectedAvatar: user.selectedAvatar,
         },
         isNewUser,
       };
@@ -169,6 +214,9 @@ module.exports = (plugin) => {
 
       console.log('[Google Signup] Created user and linked Google:', user.id);
 
+      // Grant default avatars to new user
+      await grantDefaultAvatars(user.id);
+
       // Generate JWT token
       const jwtToken = strapi.plugin('users-permissions').service('jwt').issue({ id: user.id });
 
@@ -180,7 +228,7 @@ module.exports = (plugin) => {
           email: user.email,
           confirmed: user.confirmed,
           blocked: user.blocked,
-          profileImage: user.profileImage || null,
+          selectedAvatar: null,
         },
       };
     } catch (error) {
