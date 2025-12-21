@@ -75,6 +75,8 @@ module.exports = (plugin) => {
           id: user.id,
           username: user.username,
           email: user.email,
+          confirmed: user.confirmed,
+          blocked: user.blocked,
         },
         isNewUser,
       };
@@ -171,6 +173,8 @@ module.exports = (plugin) => {
           id: user.id,
           username: user.username,
           email: user.email,
+          confirmed: user.confirmed,
+          blocked: user.blocked,
         },
       };
     } catch (error) {
