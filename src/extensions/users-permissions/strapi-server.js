@@ -49,5 +49,17 @@ module.exports = (plugin) => {
     },
   });
 
+  plugin.routes['content-api'].routes.push({
+    method: 'PUT',
+    path: '/auth/profile',
+    handler: 'auth.updateProfile',
+    config: {
+      auth: false,
+      prefix: '',
+      policies: [],
+      middlewares: [],
+    },
+  });
+
   return plugin;
 };

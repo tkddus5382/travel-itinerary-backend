@@ -31,7 +31,11 @@ module.exports = (plugin) => {
       // Check if this social account is linked to an existing user
       const socialAuths = await strapi.entityService.findMany('api::social-auth.social-auth', {
         filters: { provider, providerId },
-        populate: ['user'],
+        populate: {
+          user: {
+            populate: ['profileImage']
+          }
+        },
       });
 
       let user;
@@ -77,6 +81,7 @@ module.exports = (plugin) => {
           email: user.email,
           confirmed: user.confirmed,
           blocked: user.blocked,
+          profileImage: user.profileImage,
         },
         isNewUser,
       };
@@ -175,6 +180,7 @@ module.exports = (plugin) => {
           email: user.email,
           confirmed: user.confirmed,
           blocked: user.blocked,
+          profileImage: user.profileImage || null,
         },
       };
     } catch (error) {
@@ -282,6 +288,94 @@ module.exports = (plugin) => {
     } catch (error) {
       console.error('[Social Auth] Get error:', error);
       return ctx.internalServerError('Failed to get social accounts', { error: error.message });
+    }
+  };
+
+  /**
+   * Update user profile (username and/or profile image)
+   */
+  plugin.controllers.auth.updateProfile = async (ctx) => {
+    // Manually verify JWT since auth is disabled on route
+    let user;
+    try {
+      const token = ctx.request.header.authorization?.replace('Bearer ', '');
+      if (!token) {
+        return ctx.unauthorized('No token provided');
+      }
+      const decoded = await strapi.plugin('users-permissions').service('jwt').verify(token);
+      user = await strapi.query('plugin::users-permissions.user').findOne({
+        where: { id: decoded.id },
+        populate: ['profileImage']
+      });
+      if (!user) {
+        return ctx.unauthorized('Invalid token');
+      }
+    } catch (error) {
+      return ctx.unauthorized('Invalid token');
+    }
+
+    const { username } = ctx.request.body;
+    const files = ctx.request.files;
+
+    try {
+      const updateData = {};
+
+      // Update username if provided
+      if (username && username !== user.username) {
+        // Check if username already exists
+        const existingUser = await strapi.query('plugin::users-permissions.user').findOne({
+          where: { username },
+        });
+
+        if (existingUser && existingUser.id !== user.id) {
+          return ctx.badRequest('Username already exists');
+        }
+
+        updateData.username = username;
+      }
+
+      // Handle profile image upload
+      if (files && files.profileImage) {
+        // Delete old profile image if exists
+        if (user.profileImage) {
+          await strapi.plugins.upload.services.upload.remove(user.profileImage);
+        }
+
+        // Upload new image
+        const uploadedFiles = await strapi.plugins.upload.services.upload.upload({
+          data: {
+            refId: user.id,
+            ref: 'plugin::users-permissions.user',
+            field: 'profileImage',
+          },
+          files: files.profileImage,
+        });
+
+        updateData.profileImage = uploadedFiles[0].id;
+      }
+
+      // Update user
+      const updatedUser = await strapi.query('plugin::users-permissions.user').update({
+        where: { id: user.id },
+        data: updateData,
+        populate: ['profileImage'],
+      });
+
+      console.log('[Profile Update] User updated:', updatedUser.id);
+
+      return {
+        user: {
+          id: updatedUser.id,
+          username: updatedUser.username,
+          email: updatedUser.email,
+          confirmed: updatedUser.confirmed,
+          blocked: updatedUser.blocked,
+          profileImage: updatedUser.profileImage,
+        },
+      };
+    } catch (error) {
+      console.error('[Profile Update] Error:', error);
+      return ctx.internalServerError('Failed to update profile', { error: error.message });
     }
   };
 
