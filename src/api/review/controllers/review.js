@@ -126,7 +126,17 @@ module.exports = createCoreController('api::review.review', ({ strapi }) => ({
         filters: { user: user.id },
         populate: {
           itinerary: {
-            fields: ['id', 'title'],
+            fields: ['id', 'title', 'slug'],
+            populate: {
+              city: {
+                fields: ['slug'],
+                populate: {
+                  country: {
+                    fields: ['slug'],
+                  },
+                },
+              },
+            },
           },
           likedBy: {
             fields: ['id'],
