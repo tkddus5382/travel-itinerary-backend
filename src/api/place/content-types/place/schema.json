@@ -109,10 +109,22 @@
         }
       }
     },
+    "latitude": {
+      "type": "float"
+    },
+    "longitude": {
+      "type": "float"
+    },
     "itinerary": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::itinerary.itinerary",
+      "inversedBy": "places"
+    },
+    "day": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::day.day",
       "inversedBy": "places"
     }
   }

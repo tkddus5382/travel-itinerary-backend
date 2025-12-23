@@ -86,6 +86,14 @@
         }
       }
     },
+    "isTemplate": {
+      "type": "boolean",
+      "default": false
+    },
+    "isPublic": {
+      "type": "boolean",
+      "default": true
+    },
     "viewCount": {
       "type": "integer",
       "default": 0,
@@ -117,6 +125,12 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::place.place",
+      "mappedBy": "itinerary"
+    },
+    "days": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::day.day",
       "mappedBy": "itinerary"
     },
     "reviews": {

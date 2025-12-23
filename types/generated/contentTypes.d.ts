@@ -742,7 +742,6 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
   };
   options: {
     draftAndPublish: false;
-    timestamps: true;
   };
   attributes: {
     username: Attribute.String &
@@ -770,6 +769,11 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'plugin::users-permissions.user',
       'manyToOne',
       'plugin::users-permissions.role'
+    >;
+    selectedAvatar: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'manyToOne',
+      'api::avatar.avatar'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -878,6 +882,49 @@ export interface ApiActivityActivity extends Schema.CollectionType {
       'api::activity.activity'
     >;
     locale: Attribute.String;
+  };
+}
+
+export interface ApiAvatarAvatar extends Schema.CollectionType {
+  collectionName: 'avatars';
+  info: {
+    singularName: 'avatar';
+    pluralName: 'avatars';
+    displayName: 'Avatar';
+    description: 'User avatar icons';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    name: Attribute.String & Attribute.Required & Attribute.Unique;
+    image: Attribute.Media<'images'> & Attribute.Required;
+    rarity: Attribute.Enumeration<['common', 'rare', 'epic', 'legendary']> &
+      Attribute.Required &
+      Attribute.DefaultTo<'common'>;
+    description: Attribute.Text;
+    unlockType: Attribute.Enumeration<
+      ['default', 'mission', 'event', 'special']
+    > &
+      Attribute.Required &
+      Attribute.DefaultTo<'default'>;
+    unlockCondition: Attribute.JSON;
+    isActive: Attribute.Boolean & Attribute.DefaultTo<true>;
+    sortOrder: Attribute.Integer & Attribute.DefaultTo<0>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::avatar.avatar',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::avatar.avatar',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
   };
 }
 
@@ -1133,6 +1180,89 @@ export interface ApiCountryCountry extends Schema.CollectionType {
   };
 }
 
+export interface ApiDayDay extends Schema.CollectionType {
+  collectionName: 'days';
+  info: {
+    singularName: 'day';
+    pluralName: 'days';
+    displayName: 'Day';
+    description: '\uC77C\uC815\uC758 \uAC01 \uB0A0\uC9DC (Day 1, Day 2...)';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    dayNumber: Attribute.Integer &
+      Attribute.Required &
+      Attribute.SetMinMax<
+        {
+          min: 1;
+        },
+        number
+      >;
+    title: Attribute.String & Attribute.DefaultTo<'Day 1'>;
+    itinerary: Attribute.Relation<
+      'api::day.day',
+      'manyToOne',
+      'api::itinerary.itinerary'
+    >;
+    places: Attribute.Relation<'api::day.day', 'oneToMany', 'api::place.place'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::day.day', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::day.day', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+  };
+}
+
+export interface ApiEventCodeEventCode extends Schema.CollectionType {
+  collectionName: 'event_codes';
+  info: {
+    singularName: 'event-code';
+    pluralName: 'event-codes';
+    displayName: 'Event Code';
+    description: 'Redeemable codes for avatar unlocks';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    code: Attribute.String & Attribute.Required & Attribute.Unique;
+    avatar: Attribute.Relation<
+      'api::event-code.event-code',
+      'manyToOne',
+      'api::avatar.avatar'
+    > &
+      Attribute.Required;
+    description: Attribute.Text;
+    maxUses: Attribute.Integer;
+    currentUses: Attribute.Integer &
+      Attribute.Required &
+      Attribute.DefaultTo<0>;
+    validFrom: Attribute.Date;
+    validUntil: Attribute.Date;
+    isActive: Attribute.Boolean &
+      Attribute.Required &
+      Attribute.DefaultTo<true>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::event-code.event-code',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::event-code.event-code',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiHotelHotel extends Schema.CollectionType {
   collectionName: 'hotels';
   info: {
@@ -1287,6 +1417,8 @@ export interface ApiItineraryItinerary extends Schema.CollectionType {
         };
       }> &
       Attribute.DefaultTo<false>;
+    isTemplate: Attribute.Boolean & Attribute.DefaultTo<false>;
+    isPublic: Attribute.Boolean & Attribute.DefaultTo<true>;
     viewCount: Attribute.Integer &
       Attribute.SetPluginOptions<{
         i18n: {
@@ -1313,6 +1445,11 @@ export interface ApiItineraryItinerary extends Schema.CollectionType {
       'api::itinerary.itinerary',
       'oneToMany',
       'api::place.place'
+    >;
+    days: Attribute.Relation<
+      'api::itinerary.itinerary',
+      'oneToMany',
+      'api::day.day'
     >;
     reviews: Attribute.Relation<
       'api::itinerary.itinerary',
@@ -1422,11 +1559,14 @@ export interface ApiPlacePlace extends Schema.CollectionType {
         };
       }> &
       Attribute.DefaultTo<0>;
+    latitude: Attribute.Float;
+    longitude: Attribute.Float;
     itinerary: Attribute.Relation<
       'api::place.place',
       'manyToOne',
       'api::itinerary.itinerary'
     >;
+    day: Attribute.Relation<'api::place.place', 'manyToOne', 'api::day.day'>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1514,6 +1654,46 @@ export interface ApiReviewReview extends Schema.CollectionType {
   };
 }
 
+export interface ApiSocialAuthSocialAuth extends Schema.CollectionType {
+  collectionName: 'social_auths';
+  info: {
+    singularName: 'social-auth';
+    pluralName: 'social-auths';
+    displayName: 'Social Auth';
+    description: '\uC18C\uC15C \uB85C\uADF8\uC778 \uC5F0\uB3D9 \uC815\uBCF4';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    user: Attribute.Relation<
+      'api::social-auth.social-auth',
+      'manyToOne',
+      'plugin::users-permissions.user'
+    > &
+      Attribute.Required;
+    provider: Attribute.Enumeration<
+      ['google', 'kakao', 'instagram', 'naver', 'apple']
+    > &
+      Attribute.Required;
+    providerId: Attribute.String & Attribute.Required;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::social-auth.social-auth',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::social-auth.social-auth',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiTagTag extends Schema.CollectionType {
   collectionName: 'tags';
   info: {
@@ -1560,6 +1740,53 @@ export interface ApiTagTag extends Schema.CollectionType {
   };
 }
 
+export interface ApiUserAvatarUserAvatar extends Schema.CollectionType {
+  collectionName: 'user_avatars';
+  info: {
+    singularName: 'user-avatar';
+    pluralName: 'user-avatars';
+    displayName: 'User Avatar';
+    description: 'Tracks which avatars users have unlocked';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    user: Attribute.Relation<
+      'api::user-avatar.user-avatar',
+      'manyToOne',
+      'plugin::users-permissions.user'
+    > &
+      Attribute.Required;
+    avatar: Attribute.Relation<
+      'api::user-avatar.user-avatar',
+      'manyToOne',
+      'api::avatar.avatar'
+    > &
+      Attribute.Required;
+    unlockedAt: Attribute.DateTime & Attribute.Required;
+    unlockMethod: Attribute.Enumeration<
+      ['signup', 'mission', 'event_code', 'admin_grant']
+    > &
+      Attribute.Required;
+    unlockDetails: Attribute.String;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::user-avatar.user-avatar',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::user-avatar.user-avatar',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -1579,14 +1806,19 @@ declare module '@strapi/types' {
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'api::activity.activity': ApiActivityActivity;
+      'api::avatar.avatar': ApiAvatarAvatar;
       'api::category.category': ApiCategoryCategory;
       'api::city.city': ApiCityCity;
       'api::country.country': ApiCountryCountry;
+      'api::day.day': ApiDayDay;
+      'api::event-code.event-code': ApiEventCodeEventCode;
       'api::hotel.hotel': ApiHotelHotel;
       'api::itinerary.itinerary': ApiItineraryItinerary;
       'api::place.place': ApiPlacePlace;
       'api::review.review': ApiReviewReview;
+      'api::social-auth.social-auth': ApiSocialAuthSocialAuth;
       'api::tag.tag': ApiTagTag;
+      'api::user-avatar.user-avatar': ApiUserAvatarUserAvatar;
     }
   }
 }

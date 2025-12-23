@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "days",
+  "info": {
+    "singularName": "day",
+    "pluralName": "days",
+    "displayName": "Day",
+    "description": "일정의 각 날짜 (Day 1, Day 2...)"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "dayNumber": {
+      "type": "integer",
+      "required": true,
+      "min": 1
+    },
+    "title": {
+      "type": "string",
+      "default": "Day 1"
+    },
+    "itinerary": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::itinerary.itinerary",
+      "inversedBy": "days"
+    },
+    "places": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::place.place",
+      "mappedBy": "day"
+    }
+  }
+}
